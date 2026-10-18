@@ -56,10 +56,10 @@ Password: '--
 ![Ошибка 403 Forbidden](./images/403-error.png)
 
 **3. Обнаружение необработанного исключения СУБД:**
-![Отсутсвие экранирования](./images/haven't%20Escaping.png)
+![Отсутсвие экранирования](./images/unhandled_exception.png)
 
 **4. Внедрение пейлоада SQL-инъекции в форму входа:**
-![Приминение пейлоада](./images/Injection%20exploitation.png)
+![Приминение пейлоада](./images/sql_injection.png)
 
 **5. Успешный вход под учетной записью администратора:**
-![Вход в админ-панель](./images/admin%20panel.png)
+![Вход в админ-панель](./images/successful_login.png)
