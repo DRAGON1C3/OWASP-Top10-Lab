@@ -64,13 +64,13 @@ docker run --rm -p 3000:3000 bkimminich/juice-shop
 
 ```json
 {
-  "BasketId": 6
+  "BasketId": 6,
   "UserId": 26
 }
 ```
 
 Связь значения `[6]` с корзиной пользователя `deffer` подтверждается следующими наблюдениями:
-1. Запрос был выполнен в активной сесси пользователя `deffer`.
+1. Запрос был выполнен в активной сессии пользователя `deffer`.
 2. Запрос содержит UserId: 26.
 3. В ответе содержится добавленный пользователем `deffer` товар.
 
@@ -141,7 +141,7 @@ Content-Type: application/json
 (`UserId: 25`). Токен пользователя `deffer` не использовался.
 
 ```http
-POST /api/BasketItems HTTP/1.1
+POST /api/BasketItems/ HTTP/1.1
 Host: localhost:3000
 Authorization: Bearer [REDACTED]
 Content-Type: application/json
@@ -204,7 +204,7 @@ Content-Type: application/json
 Полный запрос:
 
 ```http
-POST /api/BasketItems HTTP/1.1
+POST /api/BasketItems/ HTTP/1.1
 Host: localhost:3000
 Authorization: Bearer [REDACTED]
 Content-Type: application/json
@@ -266,8 +266,7 @@ BasketId = 6 -> используется при выполнении опера�
 
 Корневая причина состоит из двух связанных ошибок:
 
-1. сервер не выполняет надёжную проверку принадлежности корзины текущему
-   пользователю;
+1. Сервер выполняет проверку, но её можно обойти из-за неоднозначной обработки повторяющихся параметров и рассинхронизации проверки с фактической операцией.
 2. сервер допускает неоднозначную обработку повторяющихся значений `BasketId`.
 
 Уязвимая логика может быть представлена так:
@@ -295,9 +294,9 @@ Basket.UserId == CurrentAuthenticatedUserId
 
 Примеры уязвимой и защищённой реализации аналогичного endpoint на ASP.NET Core вынесены в отдельную папку code-example:
 
-- secure-backet
+- [Уязвимая реализация](./code-example/vulnarable-basket.cs)
 
-- vulnarable-basket
+- [Защищённая реализация](./code-example/secure-backet.cs)
 
 Эти файлы не являются исходным кодом OWASP Juice Shop. Они демонстрируют, как аналогичная ошибка контроля доступа может возникнуть и быть исправлена в ASP.NET Core-приложении на C#.
 
@@ -359,8 +358,15 @@ BasketId: 7
 Это демонстрирует:
 
 ```text
-A01:2021 - Broken Access Control
+A01:2025 - Broken Access Control
 Horizontal Privilege Escalation
 Broken Object Level Authorization
 HTTP Parameter Pollution
 ```
+
+ ## 12. Ограничения теста
+
+   Тест выполнялся только против локального экземпляра OWASP Juice Shop,
+   запущенного в контролируемой лабораторной среде. Результат подтверждён
+   для endpoint `POST /api/BasketItems/` и операции добавления товара в корзину.
+   Другие endpoint'ы отдельно не проверялись.
