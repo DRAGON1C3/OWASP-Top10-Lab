@@ -122,7 +122,7 @@ Content-Type: application/json
 
 ```json
 {
-  "ProductId": [24],
+  "ProductId": [25],
   "BasketId": "7",
   "quantity": 2
 }
@@ -184,7 +184,7 @@ Content-Type: application/json
 
 ```json
 {
-  "ProductId": 24,
+  "ProductId": 51,
   "BasketId": "7",
   "quantity": 1,
   "BasketId": "6"
@@ -212,7 +212,7 @@ Content-Type: application/json
 
 ```json
 {
-  "ProductId": 24,
+  "ProductId": 51,
   "BasketId": "7",
   "quantity": 1,
   "BasketId": "6"
@@ -290,3 +290,77 @@ Basket.UserId == CurrentAuthenticatedUserId
 Проверка владельца должна выполняться непосредственно перед операцией над
 объектом. Сервер не должен доверять `UserId`, переданному клиентом, и не должен
 повторно получать `BasketId` из другого источника после прохождения проверки.
+
+## 9. Примеры реализации на C#
+
+Примеры уязвимой и защищённой реализации аналогичного endpoint на ASP.NET Core вынесены в отдельную папку code-example:
+
+- secure-backet
+
+- vulnarable-basket
+
+Эти файлы не являются исходным кодом OWASP Juice Shop. Они демонстрируют, как аналогичная ошибка контроля доступа может возникнуть и быть исправлена в ASP.NET Core-приложении на C#.
+
+Уязвимый пример показывает ситуацию, при которой сервер проверяет только существование корзины или использует разные значения `BasketId` на этапах проверки и выполнения операции.
+
+Защищённый пример показывает:
+
+- получение текущего пользователя из проверенных claims;
+
+- проверку владельца корзины на сервере;
+
+- использование одного проверенного объекта для выполнения операции;
+
+- невозможность изменить корзину другого пользователя только по известному идентификатору.
+
+## 10. Доказательства
+
+Рекомендуемые материалы:
+
+- [Корзина пользователя deffer до эксплуатации](./images/deffer-basket-before.png)
+- [Штатный запрос attacker](./images/attacker-own-request.png)
+- [Ошибка при прямом использовании BasketId 6](./images/invalid-basket-id.png)
+- [Запрос с повторяющимися BasketId](./images/http-parameter-pollution.png)
+- [Корзина deffer после эксплуатации](./images/deffer-basket-after-exploit.png)
+
+## 11. Итог
+
+В ходе тестирования было установлено, что пользователь `attacker` с
+собственным токеном и `UserId: 25` смог изменить корзину пользователя
+`deffer`, которому соответствуют:
+
+```text
+UserId: 26
+BasketId: 6
+```
+
+Собственная корзина атакующего:
+
+```text
+UserId: 25
+BasketId: 7
+```
+
+Для обхода прямой проверки использовался запрос с повторяющимся параметром
+`BasketId`:
+
+```json
+{
+  "ProductId": 24,
+  "BasketId": "7",
+  "quantity": 1,
+  "BasketId": "6"
+}
+```
+
+В результате товар появился в корзине `deffer`, хотя запрос был отправлен из
+сессии `attacker`.
+
+Это демонстрирует:
+
+```text
+A01:2021 - Broken Access Control
+Horizontal Privilege Escalation
+Broken Object Level Authorization
+HTTP Parameter Pollution
+```
