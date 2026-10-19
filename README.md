@@ -7,7 +7,7 @@
 
 | № | Категория OWASP Top 10 | Статус | Ссылка на отчет |
 |---|---|---|---|
-| A01 | **Broken Access Control** | 🟡 В процессе | [Перейти](./vulnerabilities/A01-Broken-Access-Control/) |
-| A02 | Cryptographic Failures | 🔴 Планируется | - |
-| A03 | Injection | 🔴 Планируется | - |
-# ... (остальные пункты)
+| A01 | **Broken Access Control** | 🟢 Готово | [Перейти](./vulnerabilities/A01-Broken-Access-Control/) |
+| A02 | **Security Misconfiguration** | 🟡 В процессе | - |
+| A03 | Software Supply Chain Failures | 🔴 Планируется | - |
+
