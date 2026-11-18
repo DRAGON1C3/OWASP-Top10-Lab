@@ -328,10 +328,10 @@ curl -s http://localhost:3000/metrics/ | grep -iE 'duration|latency|response_tim
 
 ## 10. Доказательства
 
-- [ ] `evidence/metrics-response.txt` - полный ответ с заголовками.
-- [ ] `images/metrics-anonymous-request.png` - запрос и ответ без заголовка `Authorization`.
-- [ ] `images/spa-fallback-baseline.png` - одинаковые ответы на `/` и на несуществующий путь.
-- [ ] `images/ffuf-discovery.png` - результат перебора с найденным путём.
+- [полный ответ с заголовками](./evidence/metrics-response.txt)
+- [запрос и ответ без заголовка `Authorization`](./images/metrics-anonymous-request.png)
+- [одинаковые ответы на `/` и на несуществующий путь](./images/spa-fallback-baseline.png)
+- [результат перебора с найденным путём](./images/ffuf-discovery.png)
 
 ---
 
